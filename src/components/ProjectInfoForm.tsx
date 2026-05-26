@@ -41,7 +41,7 @@ export const ProjectInfoForm = ({ info, onChange }: Props) => (
     <h2 className="mb-6 text-2xl font-bold">פרטי לוח חלוקה חדש</h2>
 
     {/* פרטי פרויקט */}
-    <h3 className="mb-3 text-base font-semibold text-slate-500">פרטי פרויקט</h3>
+    <h3 className="mb-3 text-base font-semibold text-slate-500">פרטי פרויקט Test</h3>
     <div className="mb-6 grid gap-4 md:grid-cols-3">
       <Field label="שם לקוח">
         <input className={inputCls} placeholder="שם לקוח" value={info.customerName}
