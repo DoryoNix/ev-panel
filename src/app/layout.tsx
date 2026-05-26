@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "מערכת תכנון לוחות לעמדות טעינה | Doryonix",
+  title: "EV Panel | Doryonix",
   description: "Doryonix | Power & Project Solution",
 };
 
