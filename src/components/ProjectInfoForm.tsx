@@ -1,6 +1,6 @@
 "use client";
 
-import type { ProjectInfo, BreakerType, EarthingSystem, PanelMaterial, PanelInstallation, PanelCabling, PanelLock } from "../types";
+import type { ProjectInfo, BreakerType, EarthingSystem, PanelMaterial, PanelInstallation, PanelCabling, PanelLock, LogoChoice } from "../types";
 import { calcContinuousRating } from "../lib/calculations";
 
 const BREAKER_TYPES: BreakerType[] = ['מא"ז',"ברייקר TMD","ברייקר LSI","מפסק משולב פחת"];
@@ -69,6 +69,42 @@ export const ProjectInfoForm = ({ info, onChange }: Props) => (
           {EARTHING.map((o) => <option key={o}>{o}</option>)}
         </select>
       </Field>
+    </div>
+
+    {/* בחירת לוגו */}
+    <h3 className="mb-3 text-base font-semibold text-slate-500">לוגו בתוכניות</h3>
+    <div className="mb-6 grid gap-4 md:grid-cols-2">
+      <button
+        type="button"
+        onClick={() => onChange("logoChoice", "doryonix")}
+        className={`flex flex-col items-center gap-3 rounded-2xl border-2 p-4 transition ${
+          info.logoChoice === "doryonix"
+            ? "border-slate-900 bg-slate-900"
+            : "border-slate-200 bg-white hover:border-slate-400"
+        }`}
+      >
+        <img src="/logo.svg" alt="Doryonix" className="h-12 w-auto" />
+        <span className={`text-sm font-medium ${info.logoChoice === "doryonix" ? "text-white" : "text-slate-700"}`}>
+          לוגו Doryonix
+        </span>
+      </button>
+      <button
+        type="button"
+        onClick={() => onChange("logoChoice", "edgecontrol")}
+        className={`flex flex-col items-center gap-3 rounded-2xl border-2 p-4 transition ${
+          info.logoChoice === "edgecontrol"
+            ? "border-slate-900 bg-slate-900"
+            : "border-slate-200 bg-white hover:border-slate-400"
+        }`}
+      >
+        <img src="/edgecontrol_logo.svg" alt="Edge Control" className="h-12 w-auto" />
+        <span className={`text-sm font-medium ${info.logoChoice === "edgecontrol" ? "text-white" : "text-slate-700"}`}>
+          לוגו Edge Control
+        </span>
+        <span className={`text-xs ${info.logoChoice === "edgecontrol" ? "text-slate-300" : "text-slate-400"}`}>
+          כולל: Powered &amp; built by DORYONIX
+        </span>
+      </button>
     </div>
 
     {/* נתוני ארון */}

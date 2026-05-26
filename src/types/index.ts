@@ -14,6 +14,7 @@ export type CableType = "N2XY נחושת" | "NA2XY אלומיניום" | "גיד
 export type CableCores = "4" | "5";
 export type CableSize = "6" | "10" | "16" | "25" | "35" | "50" | "70" | "95" | "120" | "150" | "185" | "240";
 export type FeedConnection = "מהדק פס דין" | "ישירות למפסק - חיבור מהיר" | "ישירות למפסק - נעל כבל";
+export type LogoChoice = "doryonix" | "edgecontrol";
 
 export type Circuit = {
   id: number;
@@ -50,6 +51,7 @@ export type ProjectInfo = {
   panelInstallation: PanelInstallation;
   panelCabling: PanelCabling;
   panelLock: PanelLock;
+  logoChoice: LogoChoice;
 };
 
 export type EquipmentItem = {

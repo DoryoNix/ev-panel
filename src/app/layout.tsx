@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "EV Panel | Doryonix",
   description: "Doryonix | Power & Project Solution",
+  icons: {
+    icon: "/TabLogo.png",
+  },
 };
 
 export default function RootLayout({
@@ -30,6 +33,7 @@ export default function RootLayout({
     >
       <head>
         <title>EV Panel | Doryonix</title>
+        <link rel="icon" href="/TabLogo.png" />
       </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

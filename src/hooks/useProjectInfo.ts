@@ -16,6 +16,7 @@ const DEFAULT_INFO: ProjectInfo = {
   panelInstallation: "פנימית",
   panelCabling: "מלמטה",
   panelLock: "ללא מפתח",
+  logoChoice: "doryonix",
 };
 
 export const useProjectInfo = () => {

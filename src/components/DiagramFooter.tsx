@@ -20,7 +20,14 @@ export const DiagramFooter = ({ info, pageNum, totalPages, docType }: Props) => 
     ))}
 
     {/* לוגו */}
-    <image href="/logo.svg" x={935} y={616} width={150} height={58} />
+    {info.logoChoice === "edgecontrol" ? (
+      <>
+        <text x={1010} y={624} textAnchor="middle" fontSize={7} fill="#888">Powered & built by DORYONIX</text>
+        <image href="/edgecontrol_logo.svg" x={935} y={628} width={150} height={46} />
+      </>
+    ) : (
+      <image href="/logo.svg" x={935} y={616} width={150} height={58} />
+    )}
 
     {/* לקוח */}
     <text x={845} y={628} textAnchor="middle" fontSize={10} fill="#666">שם לקוח</text>
