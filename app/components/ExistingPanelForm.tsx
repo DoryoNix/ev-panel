@@ -65,6 +65,10 @@ export const ExistingPanelForm = ({ info, circuits, onInfoChange, onAddExisting,
     });
   };
 
+  const handleMainBreakerPhotos = (e: React.ChangeEvent<HTMLInputElement>) => {
+    readImages(e.target.files, images => onInfoChange("mainBreakerPhotos", images as any));
+  };
+
   const handleBreakerPhotos = (id: number, e: React.ChangeEvent<HTMLInputElement>) => {
     readImages(e.target.files, images => {
       onUpdate(id, "breakerPhotos", images);
@@ -105,17 +109,32 @@ export const ExistingPanelForm = ({ info, circuits, onInfoChange, onAddExisting,
           <Field label="זרם רציף מרבי (80%)"><input className={readonlyCls} value={calcContinuousRating(mainBreakerDisplay)} readOnly /></Field>
         </div>
 
-        <div className="mt-6">
-          <div className="text-sm font-medium text-slate-700 mb-2">תמונות הלוח הקיים — אפשר לבחור כמה תמונות יחד</div>
-          <div className="flex flex-wrap items-center gap-4">
-            <button onClick={() => panelPhotoRef.current?.click()} className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50">
-              {(info.panelPhotos?.length || info.panelPhoto) ? "החלף תמונות" : "העלה תמונות"}
-            </button>
-            {(info.panelPhotos || (info.panelPhoto ? [info.panelPhoto] : [])).map((photo, i) => (
-              <img key={i} src={photo} alt={`לוח קיים ${i + 1}`} className="h-20 w-auto rounded-xl border border-slate-200 object-cover" />
-            ))}
+        <div className="mt-6 space-y-5">
+          <div>
+            <div className="text-sm font-medium text-slate-700 mb-2">תמונות הלוח הקיים — אפשר לבחור כמה תמונות יחד</div>
+            <div className="flex flex-wrap items-center gap-4">
+              <button onClick={() => panelPhotoRef.current?.click()} className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50">
+                {(info.panelPhotos?.length || info.panelPhoto) ? "החלף תמונות" : "העלה תמונות"}
+              </button>
+              {(info.panelPhotos || (info.panelPhoto ? [info.panelPhoto] : [])).map((photo, i) => (
+                <img key={i} src={photo} alt={`לוח קיים ${i + 1}`} className="h-20 w-28 rounded-xl border border-slate-200 object-contain bg-white" />
+              ))}
+            </div>
+            <input ref={panelPhotoRef} type="file" accept="image/*" multiple className="hidden" onChange={handlePanelPhotos} />
           </div>
-          <input ref={panelPhotoRef} type="file" accept="image/*" multiple className="hidden" onChange={handlePanelPhotos} />
+
+          <div>
+            <div className="text-sm font-medium text-slate-700 mb-2">תמונות מפסק ראשי — אפשר לבחור כמה תמונות יחד</div>
+            <div className="flex flex-wrap items-center gap-4">
+              <button onClick={() => document.getElementById("main-breaker-photos")?.click()} className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50">
+                {info.mainBreakerPhotos?.length ? "החלף תמונות" : "העלה תמונות"}
+              </button>
+              {(info.mainBreakerPhotos || []).map((photo, i) => (
+                <img key={i} src={photo} alt={`מפסק ראשי ${i + 1}`} className="h-20 w-28 rounded-xl border border-slate-200 object-contain bg-white" />
+              ))}
+            </div>
+            <input id="main-breaker-photos" type="file" accept="image/*" multiple className="hidden" onChange={handleMainBreakerPhotos} />
+          </div>
         </div>
       </section>
 
@@ -168,7 +187,7 @@ export const ExistingPanelForm = ({ info, circuits, onInfoChange, onAddExisting,
                     <SectionTitle>תמונות המפסק הקיים — אפשר לבחור כמה תמונות</SectionTitle>
                     <div className="flex flex-wrap items-center gap-4">
                       <button onClick={() => document.getElementById(`photo-${c.id}`)?.click()} className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50">{photos.length ? "החלף תמונות" : "העלה תמונות"}</button>
-                      {photos.map((photo, i) => <img key={i} src={photo} alt="מפסק" className="h-16 w-auto rounded-xl border border-slate-200 object-cover" />)}
+                      {photos.map((photo, i) => <img key={i} src={photo} alt="מפסק" className="h-16 w-24 rounded-xl border border-slate-200 object-contain bg-white" />)}
                       <input id={`photo-${c.id}`} type="file" accept="image/*" multiple className="hidden" onChange={e => handleBreakerPhotos(c.id, e)} />
                     </div>
                   </>;
@@ -191,7 +210,7 @@ export const ExistingPanelForm = ({ info, circuits, onInfoChange, onAddExisting,
                     <SectionTitle>תמונה של המקום להשתלת המפסק החדש</SectionTitle>
                     <div className="mb-4 flex items-center gap-4">
                       <button onClick={() => document.getElementById(`install-${c.id}`)?.click()} className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50">{c.installPhoto ? "החלף תמונה" : "העלה תמונה"}</button>
-                      {c.installPhoto && <img src={c.installPhoto} alt="מקום להשתלת מפסק" className="h-16 w-auto rounded-xl border border-slate-200 object-cover" />}
+                      {c.installPhoto && <img src={c.installPhoto} alt="מקום להשתלת מפסק" className="h-16 w-24 rounded-xl border border-slate-200 object-contain bg-white" />}
                       <input id={`install-${c.id}`} type="file" accept="image/*" className="hidden" onChange={e => handleInstallPhoto(c.id, e)} />
                     </div>
                     <SectionTitle>כבל הזנה לעמדה</SectionTitle>

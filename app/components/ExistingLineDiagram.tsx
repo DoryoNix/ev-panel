@@ -61,6 +61,7 @@ export const ExistingLineDiagram = ({ info, circuits, pageNum, totalPages }: Pro
     }
   });
 
+  const hasNewElements = summaryItems.some(item => item.isNew);
   const summaryBoxH = summaryItems.length * 17 + 26;
   const svgH = 700 - 90 - 95;
 
@@ -102,45 +103,53 @@ export const ExistingLineDiagram = ({ info, circuits, pageNum, totalPages }: Pro
 
       {/* תרשים SVG */}
       <div style={{ flex: 1, overflow: "hidden", position: "relative" }}>
-        {/* מקרא — HTML מחוץ ל-SVG */}
-        <div style={{
-          position: "absolute", top: 10, right: 20,
-          border: "1px solid #ccc", borderRadius: 5,
-          backgroundColor: "white", padding: "6px 10px",
-          fontSize: 10, zIndex: 10, direction: "rtl",
-        }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-            <div style={{ width: 28, height: 2, backgroundColor: "#000" }} />
-            <span style={{ color: "#333" }}>קיים בלוח</span>
+        {/* מקרא — מוצג רק כאשר יש ציוד חדש */}
+        {hasNewElements && (
+          <div style={{
+            position: "absolute", top: 10, right: 20,
+            border: "1px solid #ccc", borderRadius: 5,
+            backgroundColor: "white", padding: "7px 10px",
+            fontSize: 10, zIndex: 10, direction: "rtl",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
+              <svg width="32" height="12" viewBox="0 0 32 12" aria-hidden="true"><line x1="1" y1="6" x2="31" y2="6" stroke="#000" strokeWidth="2" /></svg>
+              <span style={{ color: "#333" }}>קו/ציוד קיים</span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5 }}>
+              <svg width="32" height="12" viewBox="0 0 32 12" aria-hidden="true"><line x1="1" y1="6" x2="31" y2="6" stroke={NC} strokeWidth="2.5" strokeDasharray="5,3" /></svg>
+              <span style={{ color: NC }}>קו חדש / תוספת</span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <svg width="32" height="18" viewBox="0 0 32 18" aria-hidden="true"><rect x="4" y="2" width="24" height="14" rx="3" fill="white" stroke={NC} strokeWidth="2" /></svg>
+              <span style={{ color: NC }}>מסגרת כחולה — ציוד חדש</span>
+            </div>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <div style={{ width: 28, height: 2, background: `repeating-linear-gradient(90deg, ${NC} 0, ${NC} 5px, transparent 5px, transparent 8px)` }} />
-            <span style={{ color: NC }}>חדש / תוספת</span>
-          </div>
-        </div>
+        )}
 
-        {/* סיכום שינויים — פינה ימין תחתית, מחוץ ל-SVG */}
-        <div style={{
-          position: "absolute",
-          bottom: 10,
-          right: 20,
-          backgroundColor: "#dbeafe",
-          border: "1px solid #bfdbfe",
-          borderRadius: 6,
-          padding: "5px 10px",
-          direction: "rtl",
-          zIndex: 10,
-        }}>
-          <div style={{ fontSize: 11, color: B, fontWeight: "bold", marginBottom: 3 }}>סיכום שינויים:</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {summaryItems.map((item, i) => (
-              <div key={i} style={{ fontSize: 10, color: item.isNew ? NC : "#555", display: "flex", alignItems: "flex-start", gap: 5, whiteSpace: "nowrap" }}>
-                <span style={{ flexShrink: 0 }}>{item.isNew ? "✦" : "●"}</span>
-                <span>{item.text}</span>
-              </div>
-            ))}
+        {/* סיכום שינויים — מוצג רק כאשר יש שינוי/ציוד חדש */}
+        {hasNewElements && (
+          <div style={{
+            position: "absolute",
+            bottom: 10,
+            right: 20,
+            backgroundColor: "#dbeafe",
+            border: "1px solid #bfdbfe",
+            borderRadius: 6,
+            padding: "5px 10px",
+            direction: "rtl",
+            zIndex: 10,
+          }}>
+            <div style={{ fontSize: 11, color: B, fontWeight: "bold", marginBottom: 3 }}>סיכום שינויים:</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              {summaryItems.filter(item => item.isNew).map((item, i) => (
+                <div key={i} style={{ fontSize: 10, color: NC, display: "flex", alignItems: "flex-start", gap: 5, whiteSpace: "nowrap" }}>
+                  <span style={{ flexShrink: 0 }}>✦</span>
+                  <span>{item.text}</span>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         <svg width={1100} height={svgH} viewBox={`0 0 1100 ${svgH}`} style={{ fontFamily: FONT }}>
           {/* מפסק ראשי */}

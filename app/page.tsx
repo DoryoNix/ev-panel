@@ -51,7 +51,8 @@ export default function Home() {
       const h = (canvas.height * w) / canvas.width;
       pdf.addImage(canvas.toDataURL("image/png"), "PNG", 5, (210 - h) / 2, w, h);
     }
-    pdf.save(`${existingInfo.panelName || "לוח-קיים"}.pdf`);
+    const projectName = (existingInfo.projectName || existingInfo.panelName || "לוח קיים").replace(/[\/:*?"<>|]/g, "-");
+    pdf.save(`תוכנית חשמל AsMade - ${projectName}.pdf`);
   };
 
   // לוח חדש — עמודים
@@ -62,7 +63,18 @@ export default function Home() {
   const canExport = circuits.length > 0 && !!info.mainBreakerAmp;
 
   // לוח קיים — עמודים
-  const existingTotalPages = 3; // תמונות + חד-קווי + רשימת ציוד
+  const hasExistingPhotos = Boolean(
+    existingInfo.panelPhoto ||
+    existingInfo.panelPhotos?.length ||
+    existingInfo.mainBreakerPhotos?.length ||
+    existingCircuits.some(c =>
+      (!c.isNew && (((c as any).breakerPhoto) || ((c as any).breakerPhotos?.length))) ||
+      (c.isNew && (c as any).installPhoto)
+    )
+  );
+  const existingTotalPages = (hasExistingPhotos ? 1 : 0) + 2; // תמונות (אם יש) + חד-קווי + רשימת ציוד
+  const existingDiagramPageNum = hasExistingPhotos ? 2 : 1;
+  const existingEquipmentPageNum = hasExistingPhotos ? 3 : 2;
   const canExportExisting = existingCircuits.length > 0;
 
   return (
@@ -195,22 +207,24 @@ export default function Home() {
               <div ref={existingPdfRef} style={{ backgroundColor: "#ffffff", color: "#000000", width: 1120, padding: 24 }}
                 className="overflow-x-auto border bg-white">
                 <div className="space-y-10">
-                  <PhotoPage
-                    info={existingInfo}
-                    circuits={existingCircuits}
-                    pageNum={1}
-                    totalPages={existingTotalPages}
-                  />
+                  {hasExistingPhotos && (
+                    <PhotoPage
+                      info={existingInfo}
+                      circuits={existingCircuits}
+                      pageNum={1}
+                      totalPages={existingTotalPages}
+                    />
+                  )}
                   <ExistingLineDiagram
                     info={existingInfo}
                     circuits={existingCircuits}
-                    pageNum={2}
+                    pageNum={existingDiagramPageNum}
                     totalPages={existingTotalPages}
                   />
                   <ExistingEquipmentTable
                     info={existingInfo}
                     circuits={existingCircuits}
-                    pageNum={3}
+                    pageNum={existingEquipmentPageNum}
                     totalPages={existingTotalPages}
                   />
                 </div>

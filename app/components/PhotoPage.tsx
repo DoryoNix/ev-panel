@@ -12,18 +12,47 @@ const FooterCell = ({ l1, v1, l2, v2 }: { l1: string; v1: string; l2: string; v2
   </div>
 );
 
-const Thumb = ({ src, label, large }: { src: string; label: string; large?: boolean }) => (
-  <div style={{ border: "1px solid #d6dde6", borderRadius: 8, padding: 6, background: "#fff" }}>
-    <div style={{ fontSize: 10, color: "#555", marginBottom: 4 }}>{label}</div>
-    <img src={src} alt={label} style={{ width: "100%", height: large ? 250 : 130, objectFit: "scale-down", display: "block" }} />
+const Thumb = ({ src, height=220 }: { src: string; height?: number }) => (
+  <div style={{ border: "1px solid #d6dde6", borderRadius: 8, padding: 6, background: "#fff", height, boxSizing: "border-box", display: "flex", flexDirection: "column" }}>
+        <div style={{ flex: 1, height: height-20, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", backgroundColor: "#fff" }}>
+      <img src={src} alt="תמונה" style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} />
+    </div>
   </div>
 );
 
+const Section = ({ title, photos }: { title: string; photos: { photo: string; label: string }[] }) => {
+  if (!photos.length) return null;
+  return (
+    <div style={{ minHeight: 0 }}>
+      <div style={{ fontSize: 13, fontWeight: "bold", color: B, marginBottom: 8 }}>{title}</div>
+      {(() => {
+        const count = photos.length;
+        const cols = count === 1 ? "1fr" : count === 2 ? "1fr 1fr" : "1fr 1fr";
+        const h = count === 1 ? 340 : count <= 4 ? 220 : 160;
+        return (
+          <div style={{ display: "grid", gridTemplateColumns: cols, gap: 8 }}>
+            {photos.map((p, i) => <Thumb key={i} src={p.photo} height={h} />)}
+          </div>
+        );
+      })()}
+    </div>
+  );
+};
+
 export const PhotoPage = ({ info, circuits, pageNum, totalPages }: Props) => {
-  const panelPhotos = info.panelPhotos?.length ? info.panelPhotos : (info.panelPhoto ? [info.panelPhoto] : []);
+  const panelPhotos = (info.panelPhotos?.length ? info.panelPhotos : (info.panelPhoto ? [info.panelPhoto] : [])).map((photo, i) => ({ photo, label: `לוח קיים ${i + 1}` }));
+  const mainBreakerPhotos = (info.mainBreakerPhotos || []).map((photo, i) => ({ photo, label: `מפסק ראשי ${i + 1}` }));
   const breakerPhotos = circuits.flatMap(c => !c.isNew ? (((c as ExistingCircuit).breakerPhotos?.length ? (c as ExistingCircuit).breakerPhotos : ((c as ExistingCircuit).breakerPhoto ? [(c as ExistingCircuit).breakerPhoto!] : [])).map((photo, i) => ({ photo, label: `מפסק מעגל ${(c as ExistingCircuit).circuitNumber || c.id}${i ? ` (${i + 1})` : ""}` }))) : []);
   const installPhotos = circuits.flatMap(c => c.isNew && (c as NewCircuit).installPhoto ? [{ photo: (c as NewCircuit).installPhoto!, label: `מקום להשתלת מפסק ${(c as NewCircuit).circuitName || c.id}` }] : []);
+  const sections = [
+    { title: "תמונות הלוח הקיים", photos: panelPhotos },
+    { title: "תמונות מפסק ראשי", photos: mainBreakerPhotos },
+    { title: "תמונות מפסקים קיימים", photos: breakerPhotos },
+    { title: "תמונות מקום להשתלה", photos: installPhotos },
+  ].filter(s => s.photos.length);
   const dateStr = new Date(info.date).toLocaleDateString("he-IL");
+
+  if (!sections.length) return null;
 
   return (
     <div className="pdf-page" style={{ width: 1100, height: 700, border: "2.5px solid #000", backgroundColor: "#fff", boxSizing: "border-box", display: "flex", flexDirection: "column", direction: "rtl", fontFamily: FONT }}>
@@ -40,17 +69,8 @@ export const PhotoPage = ({ info, circuits, pageNum, totalPages }: Props) => {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}><img src="/logo.svg" alt="Doryonix" style={{ width: 150 }} /></div>
       </div>
 
-      <div style={{ flex: 1, padding: "14px 18px", display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 16, overflow: "hidden" }}>
-        <div>
-          <div style={{ fontSize: 13, fontWeight: "bold", color: B, marginBottom: 8 }}>תמונות הלוח הקיים</div>
-          {panelPhotos.length ? <div style={{ display: "grid", gridTemplateColumns: panelPhotos.length === 1 ? "1fr" : "1fr 1fr", gap: 8 }}>{panelPhotos.slice(0, 4).map((p, i) => <Thumb key={i} src={p} label={`לוח קיים ${i + 1}`} large={panelPhotos.length === 1} />)}</div> : <div style={{ height: 420, border: "2px dashed #ccc", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", color: "#999", fontSize: 13 }}>לא הועלו תמונות</div>}
-        </div>
-        <div>
-          <div style={{ fontSize: 13, fontWeight: "bold", color: B, marginBottom: 8 }}>תמונות מפסקים / מקום להשתלה</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            {[...breakerPhotos, ...installPhotos].slice(0, 6).map((p, i) => <Thumb key={i} src={p.photo} label={p.label} />)}
-          </div>
-        </div>
+      <div style={{ flex: 1, padding: "14px 18px", display: "grid", gridTemplateColumns: sections.length === 1 ? "1fr" : "1fr 1fr", gap: 16, overflow: "hidden" }}>
+        {sections.slice(0, 4).map((s, i) => <Section key={i} title={s.title} photos={s.photos} />)}
       </div>
 
       <div style={{ height: 95, borderTop: `2px solid ${B}`, display: "grid", gridTemplateColumns: "160px 1fr 1fr 1fr 160px", direction: "rtl", backgroundColor: "#fff", flexShrink: 0, fontFamily: FONT }}>

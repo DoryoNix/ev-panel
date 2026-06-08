@@ -12,6 +12,7 @@ const DEFAULT_INFO: ExistingPanelInfo = {
   earthingSystem: "TN-C-S",
   panelPhoto: null,
   panelPhotos: [],
+  mainBreakerPhotos: [],
 };
 
 const DEFAULT_EXISTING: Omit<ExistingCircuit, "id"> = {

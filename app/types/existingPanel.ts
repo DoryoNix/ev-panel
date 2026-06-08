@@ -69,4 +69,5 @@ export type ExistingPanelInfo = {
   earthingSystem: EarthingSystem;
   panelPhoto: string | null;
   panelPhotos: string[];
+  mainBreakerPhotos: string[];
 };
